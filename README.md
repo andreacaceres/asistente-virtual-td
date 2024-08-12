@@ -20,4 +20,6 @@ deactivate
 ```
 
 ## Librerías ##
+```
 pip install speech_recognition pyaudio pyttsx4 pyjokes pyautogui pywhatkit
+```

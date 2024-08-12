@@ -3,8 +3,8 @@ Asistente Virtual para la materia Tecnologías Disruptivas
 
 ## Creando ambiente virtual ##
 ```
-python3 -m venv <env_name> <br>
-Ex. <br>
+python3 -m venv <env_name>
+Ex.
 python3 -m venv venv
 ```
 
@@ -13,9 +13,11 @@ Nota: Se tiene que estar dentro del directorio donde se creó el ambiente virtua
 ```
 source venv/bin/activate
 ```
+
 ### Desactivando el ambiente virtual ###
 ```
 deactivate
 ```
+
 ## Librerías ##
 pip install speech_recognition pyaudio pyttsx4 pyjokes pyautogui pywhatkit

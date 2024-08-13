@@ -63,8 +63,7 @@ while True:
   elif comando.startswith('reproduce') and activado:
     # 3. Reproducir un vídeo en YouTube (reproduce nombre_vídeo en YouTube)
     logging.debug('[+] %s', comando)
-    music = recognizer.replace('reproduce', '')
-    talk('reproduciendo' + music)
+    music = comando.replace('reproduce', '')
     pywhatkit.playonyt(music)
     print('[*] Reproduciendo video ...')
     logging.debug('[*] Reproduciendo video.')

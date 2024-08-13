@@ -36,6 +36,12 @@ def escuchar():
     print('[*] Error. Algo paso: ', str(e))
   return comando.lower()
 
+def abrir_aplicacion_mac(nombre_aplicacion):
+  os.system(f"open -a '{nombre_aplicacion}'")
+
+def abrir_aplicacion_win(nombre_aplicacion):
+  os.system(f"start {nombre_aplicacion}.exe")
+
 # programa principal
 motor_voces = pyttsx4.init()
 voces = motor_voces.getProperty('voices')
@@ -68,11 +74,14 @@ while True:
     print('[*] Reproduciendo video ...')
     logging.debug('[*] Reproduciendo video.')
     activado = False
-  elif comando == "abre" and activado:
+  elif comando.startswith('abre') and activado:
     # 4. Abre una aplicación (abre nombre_aplicación)
-    # here comes the code.
     logging.debug('[+] %s', comando)
+    app = comando.replace('abre', '')
     print('[*] Abriendo aplicación ...')
+    abrir_aplicacion_mac(app)
+    # Para windows
+    # abrir_aplicacion_win(app)
     logging.debug('[*] Abriendo aplicación.')
     activado = False
   elif comando == 'silencio' and activado:

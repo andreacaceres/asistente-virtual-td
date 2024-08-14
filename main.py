@@ -76,8 +76,8 @@ voces = motor_voces.getProperty('voices')
 motor_voces.setProperty('voice', voces[1].id)
 hablar('Hola, me llamo Viernes', motor_voces)
 # Variables para Spotify
-client_id = '2da5032f2c634b639aa680fae491296b'
-client_secret = 'd826f6422b6240ef88e9f08f581f77b4'
+client_id = 'CLIENT_ID'
+client_secret = 'CLIENT_SECRET'
 
 while True:
   comando = escuchar()

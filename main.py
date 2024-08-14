@@ -10,6 +10,10 @@ from datetime import datetime
 import time
 import logging
 import pyperclip
+from spotipy.oauth2 import SpotifyClientCredentials
+import spotipy
+import subprocess as sub
+import webbrowser as web
 
 logging.basicConfig(filename='std.log', filemode='w', format='%(asctime)s - %(message)s', level=logging.DEBUG)
 
@@ -71,6 +75,9 @@ motor_voces = pyttsx4.init()
 voces = motor_voces.getProperty('voices')
 motor_voces.setProperty('voice', voces[1].id)
 hablar('Hola, me llamo Viernes', motor_voces)
+# Variables para Spotify
+client_id = '2da5032f2c634b639aa680fae491296b'
+client_secret = 'd826f6422b6240ef88e9f08f581f77b4'
 
 while True:
   comando = escuchar()
@@ -86,14 +93,27 @@ while True:
     logging.debug('[*] El asistente contó chiste.')
     activado = False
     
-  elif comando.startswith('reproduce') and activado:
+  elif 'spotify' in comando and activado:
     # 2. Reproducir una canción en Spotify (reproduce nombre_canción [de artista] en Spotify)
     logging.debug('[+] %s', comando)
+    music = comando.replace('reproduce', '').replace('en spotify', '')
+    song_artist = music.split(" de ")
+    song = song_artist[0].lstrip()
+    artist = song_artist[1].lstrip()
+    sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id, client_secret))
+    result = sp.search(artist)
+    for i in range(0, len(result["tracks"]["items"])):
+      name_song = result["tracks"]["items"][i]["name"].lower()
+      if song.lower() in name_song:
+        web.open(result["tracks"]["items"][i]["uri"])
+        sleep(5)
+        pyautogui.press("enter")
+        break
     print('[*] Reproduciendo canción ...')
     logging.debug('[*] Reproduciendo canción.')
     activado = False
     
-  elif comando.startswith('reproduce') and activado:
+  elif 'youtube' in comando and activado:
     # 3. Reproducir un vídeo en YouTube (reproduce nombre_vídeo en YouTube)
     logging.debug('[+] %s', comando)
     music = comando.replace('reproduce', '')

@@ -9,6 +9,7 @@ import pywhatkit
 from datetime import datetime
 import time
 import logging
+import pyperclip
 
 logging.basicConfig(filename='std.log', filemode='w', format='%(asctime)s - %(message)s', level=logging.DEBUG)
 
@@ -42,30 +43,56 @@ def abrir_aplicacion_mac(nombre_aplicacion):
 def abrir_aplicacion_win(nombre_aplicacion):
   os.system(f"start {nombre_aplicacion}.exe")
 
+def realizar_calculo(operacion):
+    try:
+        # Evalúa la operación de manera segura
+        resultado = eval(operacion)
+        return f"El resultado de {operacion} es {resultado}."
+    except Exception as e:
+        return "Lo siento, no pude realizar el cálculo. Asegúrate de que la operación es válida."
+      
+def establecer_temporizador(segundos):
+    hablar(f"Temporizador establecido para {segundos} segundos.", motor_voces)
+    time.sleep(segundos)
+    hablar("¡El tiempo ha terminado!", motor_voces)
+    
+def leer_portapapeles(motor):
+    contenido = pyperclip.paste()
+    if contenido:
+        hablar(f"El contenido del portapapeles es: {contenido}", motor)
+        print(f"[*] Leyendo portapapeles: {contenido}")
+    else:
+        hablar("El portapapeles está vacío.", motor)
+        print("[*] El portapapeles está vacío.")
+        
+        
 # programa principal
 motor_voces = pyttsx4.init()
 voces = motor_voces.getProperty('voices')
-motor_voces.setProperty('voice', voces[32].id)
+motor_voces.setProperty('voice', voces[1].id)
 hablar('Hola, me llamo Viernes', motor_voces)
-activado = False
+
 while True:
   comando = escuchar()
   print('Comando: ', comando)
   if comando == 'hola viernes':
     print('[*] Beep!! Estoy listo para ejecutar un comando...')
     activado = True
+    
   elif comando == 'dime un chiste' and activado:
     # 1. Decir un chiste (dime un chiste)
     logging.debug('[+] %s', comando)
     hablar(pyjokes.get_joke(language='es', category='all'), motor_voces)
     logging.debug('[*] El asistente contó chiste.')
     activado = False
+    
   elif comando.startswith('reproduce') and activado:
     # 2. Reproducir una canción en Spotify (reproduce nombre_canción [de artista] en Spotify)
     logging.debug('[+] %s', comando)
     print('[*] Reproduciendo canción ...')
     logging.debug('[*] Reproduciendo canción.')
     activado = False
+    
   elif comando.startswith('reproduce') and activado:
     # 3. Reproducir un vídeo en YouTube (reproduce nombre_vídeo en YouTube)
     logging.debug('[+] %s', comando)
@@ -74,6 +101,7 @@ while True:
     print('[*] Reproduciendo video ...')
     logging.debug('[*] Reproduciendo video.')
     activado = False
+    
   elif comando.startswith('abre') and activado:
     # 4. Abre una aplicación (abre nombre_aplicación)
     logging.debug('[+] %s', comando)
@@ -84,6 +112,7 @@ while True:
     # abrir_aplicacion_win(app)
     logging.debug('[*] Abriendo aplicación.')
     activado = False
+    
   elif comando == 'silencio' and activado:
     #  5. Subir, bajar, configurar nivel volumen (subir/bajar volumen, poner volumen en tanto, silencio/quitar silencio)
     logging.debug('[+] %s', comando)
@@ -91,6 +120,7 @@ while True:
     print('[*] Silencio ...')
     logging.debug('[*] Silencio.')
     activado = False
+    
   elif comando.startswith('baja') and activado:
     # 5. Subir, bajar, configurar nivel volumen (subir/bajar volumen, poner volumen en tanto, silencio/quitar silencio)
     logging.debug('[+] %s', comando)
@@ -98,6 +128,7 @@ while True:
     print('[*] Bajando el volumen al 70% ...')
     logging.debug('[*] Bajando el volumen al 70%.')
     activado = False
+    
   elif comando.startswith('sube') and activado:
     # 5. Subir, bajar, configurar nivel volumen (subir/bajar volumen, poner volumen en tanto, silencio/quitar silencio)
     logging.debug('[+] %s', comando)
@@ -105,6 +136,7 @@ while True:
     print('[*] Subiendo el volumen al 70% ...')
     logging.debug('[*] Subiendo el volumen al 70%.')
     activado = False
+    
   elif comando == "imprime pantalla" and activado:
     # A. imprime pantalla
     logging.debug('[+] %s', comando)
@@ -117,12 +149,41 @@ while True:
     print('[*] Captura de pantalla en ', carpeta_contenedora)
     logging.debug('[*] Capturo pantalla.')
     activado = False
+    
   elif comando == "dime la hora" and activado:
     # B. Dime la hora actual
     logging.debug('[+] %s', comando)
     hora = datetime.now().strftime('%H:%M %p')
+    resultado = '[*] La hora es: ', hora
+    hablar(resultado, motor_voces)
     print('[*] La hora es: ', hora)
     logging.debug('[*] La hora es: [%s]', hora)
     activado = False
+      
+  elif comando.startswith('calcula') and activado:
+      logging.debug('[+] %s', comando)
+      operacion = comando.replace('calcula', '').strip()
+      resultado = realizar_calculo(operacion)
+      hablar(resultado, motor_voces)
+      print('[*] ', resultado)
+      logging.debug('[*] Realizó cálculo: %s', operacion)
+      activado = False
+      
+  elif comando.startswith('temporizador') and activado:
+      logging.debug('[+] %s', comando)
+      try:
+          segundos = int(comando.replace('temporizador', '').strip())
+          establecer_temporizador(segundos)
+          logging.debug('[*] Temporizador establecido para %s segundos.', segundos)
+      except ValueError:
+          hablar("Lo siento, no entendí el tiempo. Por favor, especifica en segundos.", motor_voces)
+      activado = False
+      
+  elif comando == "lee portapapeles" and activado:
+      logging.debug('[+] %s', comando)
+      leer_portapapeles(motor_voces)
+      logging.debug('[*] Leyó el portapapeles.')
+      activado = False
+      
   else:
     logging.debug('[!] %s', comando)

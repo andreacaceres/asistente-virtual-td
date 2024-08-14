@@ -201,7 +201,7 @@ while True:
     # pyautogui.press('volumeup', 70)
     
     #windows
-    reducir_aumentar_volumen_windows(10, reduccion=False)
+    reducir_aumentar_volumen_windows(10)
     
     print('[*] Subiendo el volumen 10 unidades ...')
     logging.debug('[*] Subiendo el volumen 10 unidades.')
